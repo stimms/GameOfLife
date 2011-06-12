@@ -52,8 +52,7 @@ function evolve()
 	grid[gridSize-1]=new Array(gridSize);
 	newGrid[gridSize-1]=new Array(gridSize);
 	for(var i = 0; i< gridSize; i++)
-	{	
-			
+	{		
 		if(oldGrid)
 		{
 			grid[gridSize-1][i]=oldGrid[gridSize-1][i];
@@ -65,6 +64,22 @@ function evolve()
 			grid[i][gridSize-1]=false;
 		}
 	}
+	
+	for(var i = 0; i< gridSize; i++)
+	{		
+		if(oldGrid)
+		{
+			grid[0][i]=oldGrid[0][i];
+			grid[i][0]=oldGrid[i][0];
+		}
+		else
+		{
+			grid[0][i]=false;
+			grid[i][0]=false;
+		}
+	}
+	
+	
 	for(var i = 0; i<gridSize; i++)
 	{
 		for(var j = 0; j<gridSize; j++)
