@@ -14,24 +14,24 @@ tr
 }
 </style>
 <script>
-var gridSize=10;
+var gridSize=11;
 $(document).ready(function(){
 	var row = "";
 	
-	for(var i = 0; i<gridSize; i++)
+	for(var i = 0; i<gridSize-1; i++)
 	{
 		row+="<td class='cell'>*</td>";	
 	}
-	for(var j = 0; j<gridSize; j++)
+	for(var j = 0; j<gridSize-1; j++)
 	{
 		$("#grid").append("<tr>" + row + "</tr>");
 	}	
 	$(".cell").click(function(){
 
 		$(this).addClass("alive");
+	});
 });
-});
-
+var oldGrid;
 function evolve()
 {
 	var grid = new Array(gridSize);
@@ -47,6 +47,22 @@ function evolve()
 				});
 
 		});
+	grid[gridSize-1]=new Array(gridSize);
+	newGrid[gridSize-1]=new Array(gridSize);
+	for(var i = 0; i< gridSize; i++)
+	{	
+			
+		if(oldGrid)
+		{
+			grid[gridSize-1][i]=oldGrid[gridSize-1][i];
+			grid[i][gridSize-1]=oldGrid[i][gridSize-1];
+		}
+		else
+		{
+			grid[gridSize-1][i]=false;
+			grid[i][gridSize-1]=false;
+		}
+	}
 	for(var i = 0; i<gridSize; i++)
 	{
 		for(var j = 0; j<gridSize; j++)
@@ -75,9 +91,9 @@ function evolve()
 	$("#grid").html('');
 	var row = "";
 	
-	for(var j = 0; j<gridSize; j++)
+	for(var j = 0; j<gridSize-1; j++)
 	{   row+="<tr>";
-		for(var i = 0; i<gridSize; i++)
+		for(var i = 0; i<gridSize-1; i++)
 		{
 			if(newGrid[j][i])
 			{
@@ -91,11 +107,13 @@ function evolve()
 		}
 		row+= "</tr>";
 	}
+	
 	$("#grid").append(row);
 	$(".cell").click(function(){
 
 		$(this).addClass("alive");
 });
+	oldGrid=newGrid;
 }
 
 function livingNeighborCount(grid, i, j)
@@ -124,7 +142,6 @@ function livingNeighborCount(grid, i, j)
 		count++;	
 	}
 	
-	
 	if(i+1<gridSize && j-1>=0 && grid[i+1][j-1])
 	{
 		count++;	
@@ -140,9 +157,19 @@ function livingNeighborCount(grid, i, j)
 	return count;
 }
 
+function evolveLots()
+{
+	while(true)
+	{
+		evolve();
+		sleep(1000);	
+	}
+}
+
 </script>
 
 <table id="grid" >
 
 </table>
 <input type="button" onclick="evolve()" value="evolve"/>
+<input type="button" onclick="evolveLots()" value="evolve lots"/>
