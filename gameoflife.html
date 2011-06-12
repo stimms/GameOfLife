@@ -1,0 +1,147 @@
+<script src="jquery-1.5.2.js"></script>
+<style>
+td{
+    border: 1px solid black;
+    min-height: 30px;
+    min-width: 30px;
+}
+tr
+{
+	border: 2px solid black;	
+}
+.alive{
+	background-color: pink;	
+}
+</style>
+<script>
+$(document).ready(function(){
+	var row = "";
+	
+	for(var i = 0; i<10; i++)
+	{
+		row+="<td class='cell'>*</td>";	
+	}
+	for(var j = 0; j<10; j++)
+	{
+		$("#grid").append("<tr>" + row + "</tr>");
+	}	
+	$(".cell").click(function(){
+
+		$(this).addClass("alive");
+});
+});
+
+function evolve()
+{
+	var grid = new Array(10);
+	var newGrid = new Array(10);
+	$("tr").each(function(outerindex, outeritem)
+		{	
+			grid[outerindex] = new Array(10);
+			newGrid[outerindex] = new Array(10);
+			$(this).find("td").each(function(index, item)
+				{
+					grid[outerindex][index] = $(this).hasClass("alive");
+					newGrid[outerindex][index] = false;
+				});
+
+		});
+	for(var i = 0; i<10; i++)
+	{
+		for(var j = 0; j<10; j++)
+		{
+			var livingNeighbors = livingNeighborCount(grid, i, j);
+			if(livingNeighbors > 3)
+			{
+				newGrid[i][j] = false;	
+			}
+			else if(livingNeighbors < 2)
+			{
+				newGrid[i][j] = false;	
+			}
+			else if(grid[i][j] && (livingNeighbors == 2 || livingNeighbors == 3))
+			{
+				newGrid[i][j] = true;	
+			}
+			else if(!grid[i][j] && livingNeighbors==3)
+			{
+				newGrid[i][j] = true;	
+			}
+			
+		}
+	}
+	
+	$("#grid").html('');
+	var row = "";
+	
+	for(var j = 0; j<10; j++)
+	{   row+="<tr>";
+		for(var i = 0; i<10; i++)
+		{
+			if(newGrid[j][i])
+			{
+				row+="<td class='cell alive'>*</td>";
+			}
+			else
+			{
+				
+			row+="<td class='cell'>*</td>";	
+			}
+		}
+		row+= "</tr>";
+	}
+	$("#grid").append(row);
+	$(".cell").click(function(){
+
+		$(this).addClass("alive");
+});
+}
+
+function livingNeighborCount(grid, i, j)
+{
+	var count = 0;
+	if(i-1>=0 && j-1>=0 && grid[i-1][j-1])
+	{
+		count++;	
+	}
+	if(i-1>=0 && grid[i-1][j])
+	{
+		count++;	
+	}
+	if(i-1>=0 && j+1<10 && grid[i-1][j+1])
+	{
+		count++;	
+	}
+	
+	
+	if(j-1>=0 && grid[i][j-1])
+	{
+		count++;	
+	}
+	if(j+1<10 && grid[i][j+1])
+	{
+		count++;	
+	}
+	
+	
+	if(i+1<10 && j-1>=0 && grid[i+1][j-1])
+	{
+		count++;	
+	}
+	if(i+1<10 && grid[i+1][j])
+	{
+		count++;	
+	}
+	if(i+1<10 && j+1<10 && grid[i+1][j+1])
+	{
+		count++;	
+	}
+	return count;
+}
+
+</script>
+
+<table id="grid" >
+
+</table>
+<input type="button" onclick="evolve()" value="evolve"/>
